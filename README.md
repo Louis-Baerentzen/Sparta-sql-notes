@@ -39,7 +39,7 @@ ie `REVOKE CREATE TABLE FROM username` &rarr; will reverse the permissions that 
 ---
 #### (TCL) TRANSACTION CONTROL Language
 
-These are used in the context of a transaction of data between a client and a database. Used to manage changes declared by DML statements to a table
+These are used in the context of a transaction of data between a client and a database. Used to manage changes declared by DML statements to a table. These are a major feature in online banking apps, enabling the transaction of money to and from user accounts.
 
 ###### - <i>`COMMIT`: Persist the changes specified </i> <br><br>
 
