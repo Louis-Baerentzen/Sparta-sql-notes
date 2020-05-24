@@ -39,8 +39,11 @@ FROM film_table
 
 -- SELECTING LENGTH --
 SELECT c.PostalCode AS "Post Code",
+-- Start from the left, find the space and stop reading string at this point -- 
 LEFT (c.PostalCode, CHARINDEX (' ',PostalCode)-1) AS "Post Code Reigon",
-LEN(LEFT (c.PostalCode, CHARINDEX (' ',PostalCode)-1)) AS " LENGTH ofPost Code Reigon",
+-- Calculate length and repeat process above to give us the string length --
+LEN(LEFT (c.PostalCode, CHARINDEX (' ',PostalCode)-1)) AS " LENGTH of Post Code Reigon",
+-- Tell us where the position of space is located in string --
 CHARINDEX(' ',PostalCode) AS "Space Found",
 c.Country
 FROM Customers c
@@ -50,14 +53,18 @@ SELECT * FROM Products
 
 SELECT p.ProductName AS "Product Name"
 FROM Products p
+-- Return names that have more than 0 apostrophes: an escape character --
 WHERE CHARINDEX ('''', p.ProductName) >0
 
 
 -- DATE DIFFERNECE --
 
 -- EXTENDING THE DATE BY 5 DAYS --
-SELECT DATEADD(d,5,o.OrderDate) AS "Due Date",
-    DATEDIFF(d,o.OrderDate,o.ShippedDate) AS "Ship Days",
+SELECT
+-- adds 5 days onto the date --
+DATEADD(d,5,o.OrderDate) AS "Due Date",
+-- comparing values from 2 columns to return the days in shipping --
+DATEDIFF(d,o.OrderDate,o.ShippedDate) AS "Ship Days"
 FROM Orders o
 
 
@@ -203,52 +210,20 @@ o.OrderID,
 o.OrderDate,
 -- THANKS TO INNER JOIN Customers c --
 c.CompanyName,
--- THANKS TO INNER JOIN Employees e --
+-- We can even join columns too from other tabless --
 e.FirstName+ ' ' +e.LastName AS "Employees Name",
 o.Freight 
 FROM ((Orders o 
--- THESE NOW BEING ACCESSED ALLOW US TO USE e. and c. IN THE SELECT TABLE --
+-- THESE, NOW BEING ACCESSED ALLOW US TO USE e. and c. IN THE SELECT CLAUSE --
 INNER JOIN Customers c ON o.CustomerID = c.CustomerID)
 INNER JOIN Employees e ON o.EmployeeID = e.EmployeeID)
 
 -- HOMEWORK 2 --
 SELECT DISTINCT
-p.SupplierID,
--- LINKED ITEM FROM TABLE --
+-- From join --
 s.CompanyName,
+-- Running a function to create a column --
 AVG(p.UnitsOnOrder) AS "AVERAGE UNITS ON ORDER"
 FROM Products p
 INNER JOIN Suppliers s ON p.SupplierID = s.SupplierID
 GROUP BY p.SupplierID, s.CompanyName
-
-
--- TASK FOR FRIDAY 22/5/2020 --
-
-SELECT * FROM Suppliers
-SELECT * FROM Employees
-SELECT * FROM Customers
-SELECT * FROM Products
-SELECT * FROM Orders
-
---1--
-/*Write a query that lists all Customers in either Paris or London.
-Include Customer ID, Company Name and all address fields. */
-SELECT c.CustomerID, c.CompanyName, c.Address, c.Country
-FROM Customers c
-WHERE c.City = 'Paris' OR c.City = 'London'
-
---2--
-/* List all products stored in bottles */
-SELECT *
-FROM Products 
-
---3--
-/* Repeat question above, but add in the Supplier Name and Country. */
-SELECT 
-FROM 
-
---4--
-/* Write an SQL Statement that shows how many products there are
-in each category. Include Category Name in result set and list
-the highest number first */
-SELECT
