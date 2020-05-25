@@ -1,4 +1,10 @@
 # <i><b> SQL<br> Introduction </b></i>
+- Introduction
+- Primary Keys & Foreign Keys
+- Database Types
+- Data Relationships
+- Language Types
+
 ---
 
 

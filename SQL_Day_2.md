@@ -1,4 +1,9 @@
 # <i><b> My SQL<br> DAY 2 NOTES </b></i>
+- Normal Forms and their tiers
+- Null Values
+- Security & PCIDSS
+- Data Types
+
 ---
 ## <b><i>Normal Forms</b> <br>'Keep it clean'</i>
 ---

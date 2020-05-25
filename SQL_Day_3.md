@@ -1,4 +1,13 @@
 # <i><b> My SQL<br> DAY 3 NOTES </b></i>
+
+- Group By & Order By
+- Joins
+- Arithmetic Operators
+- String Functions
+- Date Functions
+- Aggregate functions
+- <i>'Make Data Make Sense'</i>
+
 ---
 ## <i><b>Group By & Order By</b></i>
 ---
@@ -23,22 +32,26 @@ Combine matched rows from two or more tables. There are 4 main types of join tha
 <i> I have used aliasing in these examples for the joins below </i>
 
 ```SQL
-INNER JOIN Customers a ON a.CustomerName = b.CustomerName  
+SELECT * FROM student s
+INNER JOIN course c ON s.course_id = c.course_id  
 ```
 - Used to match only common data between two tables <br><br>
 
 ```SQL
-LEFT JOIN Customers a ON a.CustomerName = b.CustomerName
+SELECT * FROM student s
+LEFT JOIN course c ON s.course_id = c.course_id
 ```
 - Used to match tables declared <b>BEFORE</b> `JOIN` and any common data between two tables. <br><br>
 
 ```SQL
-RIGHT JOIN Customers a ON a.CustomerName = b.CustomerName
+SELECT * FROM student s
+RIGHT JOIN course c ON s.course_id = c.course_id
 ```
 - Used to match tables declared <b>AFTER</b> `JOIN` and any common data between two tables. <br><br>
 
 ```SQL
-FULL OUTER JOIN Customers a ON a.CustomerName = b.CustomerName
+SELECT * FROM student s
+FULL JOIN course c ON s.course_id = c.course_id
 ```
 - Used to combine both tables together. Rarely used unless no other join is appropriate. <br><br>
 
@@ -228,9 +241,202 @@ SELECT ISDATE('2017-90-32'); -- Returns 0 --
 ---
 ## <i><b>Aggregate Functions</b></i>
 ---
-Used to calculate totals usually in conjunction with the GROUP BY clause.
+Used to calculate totals usually in conjunction with the GROUP BY clause. Using the Northwind sample database as an example, we have the whole of the Products table below, with various queries manipulating the data in this table.
 
-- SUM(): Returns the total sum of a column with numerical data<br><br>
-- AVG(): Returns an average from all the numerical data from a column<br><br>
-- MAX(): Returns the highest value from a column with numerical data<br><br>
-- MIN(): Returns the lowest value from a column with numerical data<br><br>
+<img src="Nothwinds Products Table.png"/>
+<br><br>
+
+##### SUM()
+Returns the total sum of a column with numerical data (Aliasing allowed)
+```SQL
+SELECT SUM(p.UnitsOnOrder) AS "TOTAL ON ORDER"
+FROM Products p
+```
+<table>
+<tr>
+<td></td>
+<td>TOTAL ON ORDER</td>
+</tr>
+<tr>
+<td>1</td>
+<td> 780 </td>
+</tr>
+</table>
+<br>
+
+```SQL
+SELECT SUM(p.UnitsInStock) AS "TOTAL IN STOCK"
+FROM Products p
+```
+<table>
+<tr>
+<td></td>
+<td>TOTAL ON ORDER</td>
+</tr>
+<tr>
+<td>1</td>
+<td> 3119 </td>
+</tr>
+</table>
+<br>
+
+##### AVG()
+Returns an average from all the numerical data from a column (Aliasing allowed)
+```SQL
+SELECT AVG(p.ReorderLevel) AS "AVERAGE REORDER"
+FROM Products p
+```
+<table>
+<tr>
+<td></td>
+<td>AVERAGE REORDER</td>
+</tr>
+<tr>
+<td>1</td>
+<td> 12 </td>
+</tr>
+</table>
+<br>
+
+##### MIN()
+Returns the lowest value from a column with numerical data (Aliasing allowed)
+```SQL
+SELECT MIN(p.UnitPrice) AS "SMALLEST ON ORDER"
+FROM Products p
+```
+<table>
+<tr>
+<td></td>
+<td>SMALLEST UNIT PRICE</td>
+</tr>
+<tr>
+<td>1</td>
+<td> 2.5000 </td>
+</tr>
+</table>
+<br>
+
+##### MAX()
+Returns the highest value from a column with numerical data (Aliasing allowed)
+```SQL
+SELECT MAX(p.UnitPrice) AS "LARGEST UNIT PRICE"
+FROM Products p
+```
+<table>
+<tr>
+<td></td>
+<td>LARGEST UNIT PRICE</td>
+</tr>
+<tr>
+<td>1</td>
+<td> 263.5000 </td>
+</tr>
+</table>
+<br>
+
+---
+## Make Data <br> Make Sense
+---
+When handling data and using operations such as aggregates, it is in your best interest to use aliasing and other functions to describe what you are showing to a user, based on what you are building in your query. <br>
+
+<table>
+<tr>
+<td></td>
+<td>LARGEST UNIT PRICE</td>
+</tr>
+<tr>
+<td>1</td>
+<td> 263.5000 </td>
+</tr>
+</table>
+<br>
+
+Using the example above, this query returns the correct data we want. But it doesn't give us any other context for this result. What the product is or how many there are in stock, are 2 examples of important data we'd want to know in this case. This is where we use `GROUP BY` and `ORDER BY` to extend our queries and generate more meaningful results.
+<br>
+
+```SQL
+-- TOP 1 WILL RESTRICT THE RESULTS TO THE FIRST ENTRY ONLY BASED ON THIS QUERY --
+SELECT TOP 1
+p.ProductName,
+MAX(p.UnitPrice) AS "LARGEST UNIT PRICE",
+p.UnitsInStock AS "QUANTITY IN STOCK"
+FROM Products p
+GROUP BY p.ProductName, p.UnitsInStock
+ORDER BY MAX(p.UnitPrice) DESC
+
+/* GROUP BY IS GROUPING BY THE NAME OF THE PRODUCT
+MAKE SURE EACH COLUMN IS REFERENCED HERE THAT ISN'T
+PART OF AN AGGREGATE FUNCTION */
+
+/* ORDER BY IS USING THE AGGREGATE FUNCTION ONLY
+NO ALIASING IS ALLOWED HERE */
+-- DESC IS USED TO REVERSE THE ORDER SO THE HIGHEST VALUE COMES UP FIRST --
+```
+<table>
+<tr>
+<td></td>
+<td>ProductName</td>
+<td>LARGEST UNIT PRICE</td>
+<td>QUANTITY IN STOCK</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Côte de Blaye</td>
+<td> 263.5000 </td>
+<td>17</td>
+</tr>
+</table>
+<br>
+
+```SQL
+SELECT TOP 1
+p.ProductName,
+MAX(p.UnitPrice) AS "LARGEST UNIT PRICE",
+p.UnitsInStock AS "QUANTITY IN STOCK",
+-- HOW MUCH IS THE SITTING STOCK WORTH FOR THIS PRODUCT? --
+FORMAT (SUM (p.UnitsInStock * p.UnitPrice),'c', 'en-gb') AS "STOCK VALUE (EN)",
+FORMAT (SUM (p.UnitsInStock * p.UnitPrice * 92.49),'c', 'gb-in') AS "STOCK VALUE (IN)",
+FORMAT (SUM (p.UnitsInStock * p.UnitPrice * 131.17),'c', 'en-jp') AS "STOCK VALUE (JP)",
+FORMAT (SUM (p.UnitsInStock * p.UnitPrice * 4.47),'c', 'en-ae') AS "STOCK VALUE (AE DIR)"
+FROM Products p
+GROUP BY p.ProductName, p.UnitsInStock
+ORDER BY MAX(p.UnitPrice) DESC
+
+/* USE SUMS TO COMBINE COLUMNS WITH NUMBER VALUES TO
+FURTHER INTERPRET THE DATA IN MORE USEFUL WAYS. */
+
+/* FORMAT THE SUM ITSELF AND USE AN IDENTIFIER AS
+'language-country' TO SET THE CURRENCY IT IS SET
+US DOLLARS BY DEFAULT. */
+
+/* USE A Multiplication to convert the quantity appropriately */
+
+```
+<table>
+<tr>
+<td></td>
+<td>ProductName</td>
+<td>LARGEST UNIT PRICE</td>
+<td>QUANTITY IN STOCK</td>
+<td>STOCK VALUE (EN)</td>
+<td>STOCK VALUE (IN)</td>
+<td>STOCK VALUE (JP)</td>
+<td>STOCK VALUE (AE DIR)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Côte de Blaye</td>
+<td> 263.5000 </td>
+<td>17</td>
+<td>£4,479.50</td>
+<td>₹414,308.96</td>
+<td>¥587,576.02</td>
+<td>د.إ.‏20,023.37</td>
+</tr>
+</table>
+<br>
+
+<b> I AM AWARE THAT THE CURRENCY RATES HERE HAVE BEEN HARD CODED AND OBVIOUSLY RATES FLUCTUATE IN VALUE, THIS WAS ONLY AN EXERCISE IN SHOWING HOW DIFFERENT CURRENCIES CAN BE DISPLAYED USING THE RIGHT FORMATTING (VALUES ACCURATE AS OF 25/5/2020) </b><br>
+
+Getting currency rates in real time requires a JSON API. The link below goes into detail on how this is done.
+https://blog.devart.com/getting-real-currency-exchange-rates-with-data-generator-for-sql-server.html

@@ -127,23 +127,41 @@ the value in birthdate column from the employees table
 to generate our age in new column */
 
 -- AGGREGATE FUNCTIONS --
+SELECT * FROM Products
 
 -- Obtain a value from calc an entire column --
 SELECT SUM(p.UnitsOnOrder) AS "TOTAL ON ORDER"
+FROM Products p
+
+SELECT SUM(p.UnitsInStock) AS "TOTAL IN STOCK"
 FROM Products p
 
 -- AVERAGE FROM THE WHOLE COLUMN --
 SELECT AVG(p.UnitsOnOrder) AS "AVERAGE OVER ORDER"
 FROM Products p
 
+SELECT AVG(p.ReorderLevel) AS "AVERAGE REORDER"
+FROM Products p
+
 -- LOWEST VALUE FROM THE WHOLE COLUMN --
-SELECT MIN(p.UnitsOnOrder) AS "SMALLEST ON ORDER"
+SELECT MIN(p.UnitPrice) AS "SMALLEST ON ORDER"
 FROM Products p
 
 -- HIGHEST FROM THE WHOLE COLUMN --
-SELECT MAX(p.UnitsOnOrder) AS "LARGEST ON ORDER"
+SELECT MAX(p.UnitPrice) AS "LARGEST UNIT PRICE"
 FROM Products p
 
+SELECT TOP 10
+p.ProductName,
+MAX(p.UnitPrice) AS "LARGEST UNIT PRICE",
+p.UnitsInStock AS "QUANTITY IN STOCK",
+FORMAT (SUM (p.UnitsInStock * p.UnitPrice * 92.49),'c', 'gb-in') AS "STOCK VALUE (IN)",
+FORMAT (SUM (p.UnitsInStock * p.UnitPrice),'c', 'en-gb') AS "STOCK VALUE (GB)",
+FORMAT (SUM (p.UnitsInStock * p.UnitPrice * 131.17),'c', 'en-jp') AS "STOCK VALUE (JP)",
+FORMAT (SUM (p.UnitsInStock * p.UnitPrice * 4.47),'c', 'en-ae') AS "STOCK VALUE (AE DIR)"
+FROM Products p
+GROUP BY p.ProductName, p.UnitsInStock
+ORDER BY MAX(p.UnitPrice) DESC
 
 /*
 When using group by its going to do the same operation.
