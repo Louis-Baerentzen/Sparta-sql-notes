@@ -18,14 +18,14 @@ SELECT * FROM products WHERE Discontinued = 1
 SELECT * FROM products WHERE UnitPrice < 100.0000
 
 
-SELECT * FROM Suppliers s WHERE s.CompanyName LIKE '%''%' 
+SELECT * FROM Suppliers s WHERE s.CompanyName LIKE '%''%'
 
 SP_HELP Products
 
 /*
 ALIASING
 use an alias title to rename the table to be able to access the columns inside that table
-this can be any title you like 
+this can be any title you like
 */
 
 -- SELECT ALL ENTRIES WHERE THE CITY IS IN FRANCE --
@@ -44,16 +44,16 @@ SELECT p.ProductName, p.UnitPrice
 FROM Products p WHERE p.UnitsInStock > 0 AND p.UnitPrice > 29.99
 
 SELECT DISTINCT c.Country
-FROM Customers c WHERE c.ContactTitle = 'Owner'  
+FROM Customers c WHERE c.ContactTitle = 'Owner'
 
 -- The Like operator and wildcards --
 
-/* Used as a substitute for 0 or more characters 
+/* Used as a substitute for 0 or more characters
 L% L is the first character in string
 %L% L is anywhere in the string
 _i% i is the second character in the string
 
-CHARLIST SORT OF LIKE AN ARRAY 
+CHARLIST SORT OF LIKE AN ARRAY
 '[LMS]%' only names starting with LMS
 '[^LMS]%' only names except LMS
 */
@@ -82,14 +82,14 @@ FROM Customers c WHERE c.Region LIKE '%a__'
 
 --IN OPERATOR SAVE TIME & USE BRACES --
 -- Find customers in two specific named regions
-SELECT * 
+SELECT *
 FROM Customers c WHERE c.Region IN ('WA','SP')
 
 
 -- BETWEEN VALUES --
-SELECT * 
+SELECT *
 FROM EmployeeTerritories et
-WHERE et.TerritoryID >= 06800 AND et.TerritoryID <= 09999 
+WHERE et.TerritoryID >= 06800 AND et.TerritoryID <= 09999
 
 -- LESS THAN VALUE --
 SELECT *
@@ -102,10 +102,10 @@ WHERE cat.CategoryName LIKE '[BS]%'
 
 -- COUNTING AND GROUP DATA--
 --SELECT A COUNT OF ALL --
-SELECT COUNT (*) 
--- FROM the ORDERS table aliased as o -- 
+SELECT COUNT (*)
+-- FROM the ORDERS table aliased as o --
 FROM Orders o
--- Where we retrieve 2 employees (number 5 and 7) 
+-- Where we retrieve 2 employees (number 5 and 7)
 WHERE o.EmployeeID IN (5,7)
 
 -- COUNT ALL THE ORDERS FROM EACH EMPLOYEE THEN GENERATING A TEMPORARY COLUMN IN RED --
@@ -129,7 +129,7 @@ CONCAT(c.City , ', ' , c.Country) AS "City"
 FROM Customers c
 
 -- CONCAT COLUMNS --
-SELECT e.FirstName + ' ' + e.LastName  AS "FULL NAME" 
+SELECT e.FirstName + ' ' + e.LastName  AS "FULL NAME"
 FROM Employees e
 
 SELECT
